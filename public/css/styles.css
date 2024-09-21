@@ -4,3 +4,58 @@
 *:after {
   box-sizing: border-box;
 }
+
+body{
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+header{
+  height: 70px;
+}
+
+header span a{
+  font-size: 2em;
+  font-weight: 800;
+  text-decoration: none;
+  color: black;
+}
+header div a{
+  font-size: 1em;
+  text-decoration: none;
+  color: black;
+  position: absolute;
+  top: 1rem;
+  right: .5rem;
+}
+
+
+
+nav ul{
+  list-style-type: none;
+  background-color: rgb(8, 8, 77);
+  padding: 0px;
+  margin: 0px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+}
+
+nav a{
+  text-decoration: none;
+  color: white;
+  padding: 15px;
+  display: block;
+  text-align: center;
+}
+
+h1{
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.hero img{
+  width: 75%;
+
+  margin: 0 auto;
+}
