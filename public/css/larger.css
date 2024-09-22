@@ -5,8 +5,18 @@
         background-size: cover;
     }
 
+    header{
+        margin-bottom: 3em;
+        padding-left: 5em;
+        padding-right: 5em;
+    }
+
     h1, header span a{
         font-size: 3em;
+    }
+
+    header span a{
+        padding-left: 5em;
     }
 
     main {
@@ -17,9 +27,36 @@
         background-color: white;
     }
 
-    nav{
+    nav {
         width: 95%;
         margin: 0 auto;
+        border-radius: 10px;
+    }
+
+    nav ul {
+        list-style-type: none;
+        background-color: rgb(8, 8, 77);
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        border-radius: 10px;
+        
+    }
+
+    nav li {
+        flex-grow: 1;
+        font-size: 1.5em;
+    }
+
+    nav a {
+        text-decoration: none;
+        color: white;
+        padding: 15px;
+        display: block;
+        text-align: center;
     }
 
     .down-double-part{
@@ -33,10 +70,58 @@
         grid-row: 2/2;
         width: 100%;
     }
+    .upgradesh1{
+        grid-column: 1/2;
+        grid-row: 1/1;
+        text-align: center;
+        margin: 0 auto;
+    }
+    .reviewsh1{
+        grid-column: 2/3;
+        grid-row: 1/1;
+        text-align: center;
+        margin: 0 auto;
+    }
     .reviews{
         grid-column: 2/3;
         grid-row: 2/2;
         text-align: center;
     }
+    .reviews ul{
+        font-size: 2em;
+    }
     
+
+    .hero{
+        width: 100%;
+        margin: 30px auto;
+    }
+
+    .hero img{
+        width: 100%;
+        height: auto;
+    }
+
+    .hero-label{
+        width: 40%;
+        padding: 20px;
+        top: 50%;
+        left: 25%;
+        transform: translate(-50%, -50%);
+    }
+
+    .hero-label h2{
+        font-size: 2em;
+    }
+    .hero-label p{
+        margin-left: 5em;
+        font-size: 1.2em;
+    }
+    .hero-label button{
+        font-size: 1.2em;
+        padding: 20px 30px;
+    }
+    .firsth1{
+        text-align: center;
+    }
 }
