@@ -1,17 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@800&family=Oswald:wght@400&display=swap');
 
-:root{
+:root {
   --background-color-one: #eeeeeedc;
   --hfont: "Gowun Batang";
   --pfont: "Oswald";
-
 }
 
-body h1{
+body h1 {
   font-family: var(--hfont);
 }
 
-body p{
+body p {
   font-family: var(--pfont);
 }
 
