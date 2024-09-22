@@ -1,11 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@800&family=Oswald:wght@400&display=swap');
-/******* Change Box Model ***************/
-*,
-*:before,
-*:after {
-  box-sizing: border-box;
-}
-
 
 :root{
   --background-color-one: #eeeeeedc;

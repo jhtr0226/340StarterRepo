@@ -30,12 +30,12 @@
     }
     .upgrades{
         grid-column: 1/2;
-        grid-row: 1/1;
+        grid-row: 2/2;
         width: 100%;
     }
     .reviews{
         grid-column: 2/3;
-        grid-row: 1/1;
+        grid-row: 2/2;
         text-align: center;
     }
     
