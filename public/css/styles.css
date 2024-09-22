@@ -67,7 +67,7 @@ h1{
 .hero {
   max-width: 100%;  
   height: auto;
-  margin: 0 auto;
+  margin: 35px auto;
   width: 80%;
   text-align: center;
   display: flex;
