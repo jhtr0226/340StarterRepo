@@ -19,7 +19,7 @@
         padding-left: 5em;
     }
 
-    main {
+    #wrapper {
         width: 60%;
         margin: auto;
         border-radius: 5px;
