@@ -35,8 +35,8 @@ FROM public.inventory inv
 WHERE cls.classification_name = 'Sport';
 ---6---
 UPDATE public.inventory
-SET inv_image = CONCAT('/images/vehicles/', inv_image),
-    inv_thumbnail = CONCAT('/images/vehicles/', inv_thumbnail)
-WHERE inv_image LIKE '%images/%'
-    AND inv_thumbnail LIKE '%images/%';
+SET inv_image = REPLACE(inv_image, '/images/', '/images/vehicles/'),
+    inv_thumbnail = REPLACE(inv_thumbnail, '/images/', '/images/vehicles/')
+WHERE inv_image LIKE '/images/%'
+    OR inv_thumbnail LIKE '/images/%';
 -------
