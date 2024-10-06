@@ -1,0 +1,23 @@
+Lines 1-4 - a multi-line comment for the function.
+
+Line 5 - app.use is an Express function, which 
+accepts the default Express arrow function to be used with errors.
+Line 6 - builds the navigation bar for the error view.
+
+Line 7 - a console statement to show the route and 
+error that occurred. This is helpful to you to know what 
+the client was doing when the error occurred.
+
+Line 8 - calls the "error.ejs" view (you will build that next) 
+in an "errors" folder.
+
+Line 9 - sets the value of the "title" for the view. It will 
+use the status code or "Server Error" as the title if no status 
+code is set.
+
+Line 10 - sets the message to be displayed in the error view 
+to the message sent in the error object. We will alter this later.
+
+Line 11 - sets the navigation bar for use in the error view.
+Line 12 - ends the render function.
+Line 13 - ends the arrow and app.use functions.

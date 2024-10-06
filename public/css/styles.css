@@ -142,3 +142,58 @@ h1{
   height: auto;
   border-radius: 25px;
 }
+
+.errorH, .errorP{
+  text-align: center;
+}
+
+#inv-display li {
+  width: 80%;
+  background-color: #eeeeeedc;
+  border-radius: 25px;
+  border: 1px solid #000;
+  text-align: center;
+  margin: 25px -5px;
+  padding: 15px;
+  transition: transform .5s;
+}
+
+#inv-display li:hover{
+  transform: scale(1.1);
+}
+
+#inv-display{
+  list-style-type: none;
+}
+
+#inv-display img {
+  border-radius: 25px;
+}
+
+#inv-display h2>a{
+  text-decoration: none;
+  color: black;
+}
+
+#inv-display h2>a:hover{
+  color: blue;
+  text-decoration: underline;
+}
+
+#inv-display span{
+  color: green;
+  font-weight: bold;
+}
+
+
+.vehicle-detail{
+  max-width: 100%;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.vehicle-detail img{
+  width: 90%;
+  height: auto;
+  border-radius: 25px;
+}

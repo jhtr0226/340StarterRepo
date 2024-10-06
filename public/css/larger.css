@@ -124,4 +124,28 @@
     .firsth1{
         text-align: center;
     }
+
+        #inv-display li{
+            margin: 25px auto;
+        }
+
+    .vehicle-detail{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .leftPart{
+        grid-column: 1/2;
+        grid-row: 1/1;
+    }
+
+    .rightPart{
+        grid-column: 2/3;
+        grid-row: 1/1;
+        margin: 0 auto;
+        text-align: left;
+        padding-top: 100px;
+    }
+
 }

@@ -32,24 +32,19 @@ Util.buildClassificationGrid = async function (data) {
   return grid
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Util.buildVehicleDetail = async function (vehicle) {
+  let detail = '<div class="vehicle-detail">';
+  detail += `<div class="leftPart"><h1>${vehicle.inv_year}: ${vehicle.inv_make} ${vehicle.inv_model}</h1>`;
+  detail += `<img src="${vehicle.inv_image}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model}"/></div>`;
+  detail += `<div class="rightPart"><h2>${vehicle.inv_make} ${vehicle.inv_model} Details</h2>`;
+  detail += `<p>Price: $${new Intl.NumberFormat('en-US').format(vehicle.inv_price)}</p>`;
+  detail += `<p>Description: ${vehicle.inv_description}</p>`;
+  detail += `<p>Color: ${vehicle.inv_color}</p>`
+  detail += `<p>Miles: ${new Intl.NumberFormat('en-US').format(vehicle.inv_miles)}</p></div>`;
+  detail += '</div>';
+  return detail;
+  
+}
 
 
 Util.getNav = async function (req, res, next) {
@@ -71,6 +66,9 @@ Util.getNav = async function (req, res, next) {
   list += "</ul>"
   return list
 }
+
+
+Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
 
 module.exports = Util
 
