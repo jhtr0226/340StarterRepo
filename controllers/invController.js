@@ -26,7 +26,7 @@ invCont.buildByClassificationId = async function (req, res, next) {
     });
   } catch (error) {
     console.error("Error fetching vehicles by classification:", error);
-    next(error); // Let the error handling middleware handle the error
+    next(error);
   }
 };
 
@@ -72,7 +72,7 @@ invCont.addClassification = async function (req, res, next) {
 
     if (result) {
       req.flash("formSuccess", `${classification_name} classification successfully added.`);
-      return res.redirect("/inv");  // Redirect to inventory management page on success
+      return res.redirect("/inv");
     } else {
       req.flash("formError", "Failed to add classification.");
       return res.redirect("/inv/add-classification");
@@ -100,7 +100,7 @@ invCont.showAddCarForm = async function (req, res, next) {
       return `<option value="${classification.classification_id}">${classification.classification_name}</option>`;
     }).join("");
 
-    console.log("Classification Options:", classificationOptions);
+    //console.log("Classification Options:", classificationOptions);
     res.render("inventory/add-car", {
       title: "Add New Vehicle",
       classificationOptions,
