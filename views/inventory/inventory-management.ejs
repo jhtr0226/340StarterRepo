@@ -1,0 +1,13 @@
+<h1>Inventory Management</h1>
+
+<% if (messages.formSuccess && messages.formSuccess.length> 0) { %>
+    <div class="flash-message success">
+        <%= messages.formSuccess[0] %>
+    </div>
+    <% } %>
+
+        <!-- The rest of your inventory management page -->
+        <ul>
+            <li><a href="/inv/add-classification">Add New Classification</a></li>
+            <li><a href="/inv/add-car">Add New Vehicle</a></li>
+        </ul>

@@ -238,10 +238,10 @@ form a:hover{
 
 
 /* Style for invalid inputs */
-input:required:invalid {
+input:required:invalid, textarea:required:invalid {
   border-left: 6px solid rgba(255, 0, 0, 0.678);
 }
 
-input:required:valid {
+input:required:valid, textarea:required:valid {
   border-left: 6px solid green;
 }

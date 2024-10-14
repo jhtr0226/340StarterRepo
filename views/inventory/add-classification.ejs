@@ -1,0 +1,24 @@
+<form id="add-classification-form" action="/inv/add-classification" method="POST" novalidate>
+    <label for="classification_name">Classification Name:</label>
+
+    <p>Name must be Alphabetic Characters ONLY</p>
+
+    <input type="text" id="classification_name" name="classification_name" required>
+    <span id="error-message" style="color:red;"></span>
+
+    <button type="submit">Add Classification</button>
+
+    <!-- Display form error messages -->
+    <% if (formError && formError.length> 0) { %>
+        <div class="flash-message error">
+            <%= formError[0] %> <!-- Show the first error message -->
+        </div>
+        <% } %>
+
+            <!-- Display success messages -->
+            <% if (formSuccess && formSuccess.length> 0) { %>
+                <div class="flash-message success">
+                    <%= formSuccess[0] %> <!-- Show the first success message -->
+                </div>
+                <% } %>
+</form>

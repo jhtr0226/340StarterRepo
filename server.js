@@ -17,6 +17,7 @@ const inventoryRoute = require("./routes/inventoryRoute")
 const utilities = require("./utilities/")
 const account = require("./routes/accountRoute")
 const bodyParser = require("body-parser")
+const flash = require('connect-flash');
 
 app.use(session({
   store: new (require('connect-pg-simple')(session))({
@@ -50,6 +51,7 @@ app.set("view engine", "ejs")
 app.use(expressLayouts)
 app.set("layout", "./layouts/layout")
 app.use("/account", account)
+app.use(flash());
 
 /* ***********************
  * Routes
@@ -58,6 +60,11 @@ app.use(static)
 //Index route
 app.use("/inv", inventoryRoute)
 app.get("/", utilities.handleErrors(baseController.buildHome))
+app.use((req, res, next) => {
+  res.locals.flash = req.flash();
+  next();
+});
+
 //app.use(async (req, res, next) =>
 //  next({ status: 404, message: 'Sorry, we appear to have lost that page.' })
 //)
