@@ -57,11 +57,8 @@ invCont.buildByInventoryId = async function (req, res, next) {
 
 invCont.addClassification = async function (req, res, next) {
   let { classification_name } = req.body;
-  // Log the incoming request
-  console.log("Received POST request to add classification:", classification_name);
   classification_name = classification_name.charAt(0).toUpperCase() + classification_name.slice(1).toLowerCase();
 
-  // Check for invalid classification name
   if (!classification_name || !/^[a-zA-Z]+$/.test(classification_name)) {
     req.flash("formError", "Invalid classification name. Only letters are allowed.");
     return res.redirect("/inv/add-classification");
@@ -72,39 +69,36 @@ invCont.addClassification = async function (req, res, next) {
 
     if (result) {
       req.flash("formSuccess", `${classification_name} classification successfully added.`);
-      return res.redirect("/inv");
+      return res.redirect("/inv");  // Redirect to avoid flash message persistence
     } else {
       req.flash("formError", "Failed to add classification.");
-      return res.redirect("/inv/add-classification");
+      return res.redirect("/inv/add-classification");  // PRG pattern
     }
-  }
-  catch (err) {
-    console.error("Error in addClassification controller:", err);
-    req.flash("formError", "An error occurred while adding the classification. Try again!");
-    return res.redirect("/inv/add-classification");
+  } catch (err) {
+    req.flash("formError", "An error occurred while adding the classification.");
+    return res.redirect("/inv/add-classification");  // PRG pattern
   }
 };
 
+
 invCont.showAddCarForm = async function (req, res, next) {
   try {
-    console.log("Rendering EJS form for adding a car");
-    const nav = await utilities.getNav(); 
+    const nav = await utilities.getNav();
     const classificationsData = await invModel.getClassifications();
-    console.log("Classifications Data:", classificationsData.rows);
-    if (!classificationsData.rows || classificationsData.rows.length === 0) {
-      console.log("No classifications found");
-    }
-
-    // Dynamically build classification options for the dropdown
     const classificationOptions = classificationsData.rows.map(classification => {
       return `<option value="${classification.classification_id}">${classification.classification_name}</option>`;
     }).join("");
 
-    //console.log("Classification Options:", classificationOptions);
+    // Flash messages are consumed here, so they won't persist after rendering the form
+    const formError = req.flash('formError');
+    const formSuccess = req.flash('formSuccess');
+
     res.render("inventory/add-car", {
       title: "Add New Vehicle",
       classificationOptions,
-      nav, 
+      nav,
+      formError,
+      formSuccess
     });
   } catch (error) {
     console.error("Error in showAddCarForm:", error);
@@ -117,7 +111,7 @@ invCont.addCar = async function (req, res, next) {
   const { classification_id, make, model, description, image, thumbnail, price, year, miles, color } = req.body;
 
   if (!classification_id || !make || !model || !description || !image || !thumbnail || !price || !year || !miles || !color) {
-    console.log("Missing required fields");
+    //console.log("Missing required fields");
     req.flash('formError', "Whoops! Check the fields! Something must be wrong, failed adding new car!");
     return res.redirect("/inv/add-car");
   }
@@ -128,12 +122,12 @@ invCont.addCar = async function (req, res, next) {
     });
 
     if (result) {
-      console.log("Vehicle added:", result); 
+      //console.log("Vehicle added:", result); 
       req.flash('formSuccess', `Vehicle ${make} ${model} added successfully.`);
       return res.redirect("/inv");
     } else {
-      console.log("Failed to add vehicle");
-      req.flash('formError', "Failed to add the vehicle.");
+      //console.log("Failed to add vehicle");
+      req.flash('formError', "Whoops! Check the fields! Something must be wrong, failed adding new car!");
       return res.redirect("/inv/add-car");
     }
   } catch (error) {

@@ -82,12 +82,11 @@ app.use((req, res, next) => {
 
 app.use(async (err, req, res, next) => {
   let nav = await utilities.getNav();
-  //console.error(`Error at: "${req.originalUrl}": ${err.message}`);
   const status = err.status || 500;
-  const message = status === 404 ? 'The page you are looking for cannot be found.' : 'Oh no! Something went wrong on our end.';
+  const message = err.message || 'Oh no! Something went wrong on our end.'; // Respect custom error messages
   res.status(status).render("errors/error", {
     title: status === 404 ? "404 - Page Not Found" : "500 - Server Error",
-    message,
+    message, // Use the message from the error itself
     nav,
   });
 });

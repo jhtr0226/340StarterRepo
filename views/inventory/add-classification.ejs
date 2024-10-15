@@ -10,15 +10,6 @@
 
     <!-- Display form error messages -->
     <% if (formError && formError.length> 0) { %>
-        <div class="flash-message error">
-            <%= formError[0] %>
-        </div>
-        <% } %>
-
-            <!-- Display success messages -->
-            <% if (formSuccess && formSuccess.length> 0) { %>
-                <div class="flash-message success">
-                    <%= formSuccess[0] %>
-                </div>
-                <% } %>
+        <div class="flash-message error"><%= formError %></div>
+    <% } %>
 </form>

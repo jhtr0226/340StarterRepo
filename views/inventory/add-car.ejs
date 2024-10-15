@@ -36,6 +36,10 @@
 
 
    
-    <%- messages() %>
+    <% if (formError && formError.length> 0) { %>
+        <div class="flash-message error">
+            <%= formError %>
+        </div>
+    <% } %>
 
 </form>

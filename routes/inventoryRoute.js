@@ -12,7 +12,7 @@ router.get("/cause-error", (req, res, next) => {
 
 router.get("/", async (req, res) => {
   try {
-    console.log("Entering /inv route");
+    //console.log("Entering /inv route");
     let nav = await utilities.getNav(); 
 
     res.render("inventory/inventory-management", {

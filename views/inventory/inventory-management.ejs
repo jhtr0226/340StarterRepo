@@ -1,6 +1,19 @@
 <h1>Inventory Management</h1>
 
 <% if (messages.formSuccess && messages.formSuccess.length> 0) { %>
+    <div class="alert alert-success">
+        <%= messages.formSuccess %>
+    </div>
+<% } %>
+
+<!-- Display error message -->
+<% if (messages.formError && messages.formError.length> 0) { %>
+    <div class="alert alert-danger">
+        <%= messages.formError %>
+    </div>
+<% } %>
+
+<% if (messages && messages.formSuccess && messages.formSuccess.length> 0) { %>
     <div class="flash-message success">
         <%= messages.formSuccess[0] %>
     </div>
