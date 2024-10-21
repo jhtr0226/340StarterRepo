@@ -1,5 +1,7 @@
 const invModel = require("../models/inventory-model")
 const Util = {}
+const jwt = require("jsonwebtoken")
+require("dotenv").config()
 
 
 Util.buildClassificationGrid = async function (data) {
@@ -68,7 +70,116 @@ Util.getNav = async function (req, res, next) {
 }
 
 
+
+Util.buildClassificationList = async function (classification_id = null) {
+  let data = await invModel.getClassifications()
+  let classificationList =
+    '<select name="classification_id" id="classification_id" required>'
+  classificationList += "<option value=''>Choose a Classification</option>"
+  
+  data.rows.forEach((row) => {
+    classificationList += '<option value="' + row.classification_id + '"'
+    if (
+      classification_id != null &&
+      row.classification_id == classification_id
+    ) {
+      classificationList += " selected "
+    }
+    classificationList += ">" + row.classification_name + "</option>"
+  })
+  classificationList += "</select>"
+  return classificationList
+}
+
 Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
+
+
+/* ****************************************
+* Middleware to check token validity
+**************************************** */
+Util.checkJWTToken = (req, res, next) => {
+ if (req.cookies.jwt) {
+  jwt.verify(
+   req.cookies.jwt,
+   process.env.ACCESS_TOKEN_SECRET,
+   function (err, accountData) {
+    if (err) {
+     req.flash("Please log in")
+     res.clearCookie("jwt")
+     return res.redirect("/account/login")
+    }
+    res.locals.accountData = accountData
+    res.locals.loggedin = true
+    next()
+   })
+ } else {
+  next()
+ }
+}
+
+/* ****************************************
+ *  Check Login
+ * ************************************ */
+Util.checkLogin = (req, res, next) => {
+ if (res.locals.loggedin) {
+   next()
+ } else {
+   req.flash("notice", "Please log in.")
+   return res.redirect("/account/login")
+ }
+}
+
+Util.checkAuthorization = (req, res, next) => {
+  if (res.locals.accountData) {
+    const validTypes = ['Employee', 'Admin'];
+    
+    if (validTypes.includes(res.locals.accountData.account_type)) {
+      next();
+    } else {
+      req.flash("error", "Please log in with a valid administrator/employee account");
+      return res.redirect("/account/login"); // Block access and redirect to login if Client
+    }
+  } else {
+    req.flash("notice", "Please log in");
+    return res.redirect("/account/login");
+  }
+};
+
+Util.checkAccountId = async (req, res, next) => {
+  const account_id = parseInt(req.params.account_id)
+  try {
+    if (account_id === res.locals.accountData.account_id) {
+      next()
+    }
+    else {
+      req.flash("error", "Not authorised.")
+      return res.redirect("/account/")
+    }
+  }
+  catch (error) {
+    req.flash("notice", "Please log in")
+    return res.redirect("/account/login")
+  }
+}
+
+
+Util.checkAccountReviewId = async (req, res, next) => {
+  const review_id = parseInt(req.params.review_id)
+  const data = await invModel.getReviewById(review_id)
+  try {
+    if (data.account_id === res.locals.accountData.account_id) {
+      next()
+    }
+    else {
+      req.flash("error", "Not authorised.")
+      return res.redirect("/account/")
+    }
+  }
+  catch (error) {
+    req.flash("error", "Not a valid review.")
+    return res.redirect("/account/")
+  }
+}
 
 module.exports = Util
 

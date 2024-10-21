@@ -53,7 +53,21 @@ invCont.buildByInventoryId = async function (req, res, next) {
 }
 
 
-
+invCont.buildInventoryManagement = async function (req, res, next) {
+  try {
+    let nav = await utilities.getNav(); 
+    const classificationSelect = await utilities.buildClassificationList(); 
+    res.render("inventory/inventory-management", {
+      title: "Inventory Management",
+      nav,
+      classificationSelect,  
+      messages: req.flash(),
+    });
+  } catch (error) {
+    console.error("Error in buildInventoryManagement:", error);
+    next(error);
+  }
+};
 
 invCont.addClassification = async function (req, res, next) {
   let { classification_name } = req.body;
@@ -69,14 +83,14 @@ invCont.addClassification = async function (req, res, next) {
 
     if (result) {
       req.flash("formSuccess", `${classification_name} classification successfully added.`);
-      return res.redirect("/inv");  // Redirect to avoid flash message persistence
+      return res.redirect("/inv");
     } else {
       req.flash("formError", "Failed to add classification.");
-      return res.redirect("/inv/add-classification");  // PRG pattern
+      return res.redirect("/inv/add-classification"); 
     }
-  } catch (err) {
-    req.flash("formError", "An error occurred while adding the classification.");
-    return res.redirect("/inv/add-classification");  // PRG pattern
+  } catch (error) {
+    console.error("Error adding Classification", error);
+    next(error);
   }
 };
 
@@ -89,7 +103,6 @@ invCont.showAddCarForm = async function (req, res, next) {
       return `<option value="${classification.classification_id}">${classification.classification_name}</option>`;
     }).join("");
 
-    // Flash messages are consumed here, so they won't persist after rendering the form
     const formError = req.flash('formError');
     const formSuccess = req.flash('formSuccess');
 
@@ -132,9 +145,147 @@ invCont.addCar = async function (req, res, next) {
     }
   } catch (error) {
     console.error("Error adding vehicle:", error);
-    req.flash('formError', "An error occurred while adding the vehicle.");
-    return res.redirect("/inv/add-car");
+    next(error);
   }
 };
+
+/* ***************************
+ *  Return Inventory by Classification As JSON
+ * ************************** */
+invCont.getInventoryJSON = async (req, res, next) => {
+  const classification_id = parseInt(req.params.classification_id)
+  const invData = await invModel.getInventoryByClassificationId(classification_id)
+  if (invData[0].inv_id) {
+    return res.json(invData)
+  } else {
+    next(new Error("No data returned"))
+  }
+}
+
+
+/* ***************************
+ *  Build edit inventory view
+ * ************************** */
+invCont.buildEditInventory = async function (req, res, next) {
+  const inv_id = parseInt(req.params.invId);
+  if (isNaN(inv_id)) {
+    return res.status(400).send("Invalid inventory ID.");
+  }
+
+  try {
+    const itemData = await invModel.getInventoryById(inv_id);
+    if (!itemData) {
+      throw new Error('Vehicle not found');
+    }
+
+    const classificationList = await utilities.buildClassificationList(itemData.classification_id);
+    const itemName = `${itemData.inv_make} ${itemData.inv_model}`;
+    const nav = await utilities.getNav();
+
+    res.render("inventory/edit-inventory", {
+      title: "Edit " + itemName,
+      nav,
+      classificationList,
+      inv_id: itemData.inv_id,
+      inv_make: itemData.inv_make,
+      inv_model: itemData.inv_model,
+      inv_year: itemData.inv_year,
+      inv_description: itemData.inv_description,
+      inv_image: itemData.inv_image,
+      inv_thumbnail: itemData.inv_thumbnail,
+      inv_price: itemData.inv_price,
+      inv_miles: itemData.inv_miles,
+      inv_color: itemData.inv_color
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+invCont.updateInventory = async function (req, res, next) {
+  const {
+    classification_id, inv_id, inv_make, inv_model, inv_description,
+    inv_image, inv_thumbnail, inv_price, inv_year, inv_miles, inv_color
+  } = req.body;
+
+  try {
+    const updateResult = await invModel.updateInventory(
+      classification_id, inv_id, inv_make, inv_model, inv_description, 
+      inv_image, inv_thumbnail, inv_price, inv_year, inv_miles, inv_color
+    );
+
+    if (updateResult) {
+      req.flash("formSuccess", `${inv_make} ${inv_model} successfully updated.`);
+      return res.redirect("/inv");
+    } else {
+      throw new Error("Update failed.");
+    }
+  }
+  catch (error) {
+    const nav = await utilities.getNav();
+    const classificationList = await utilities.buildClassificationList(classification_id);
+
+    req.flash("formError", "Update failed. Please try again.");
+    return res.status(500).render("inventory/edit-inventory", {
+      title: `Edit ${inv_make} ${inv_model}`,
+      nav,
+      classificationList,
+      inv_id,
+      inv_make,
+      inv_model,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
+      inv_year,
+      inv_miles,
+      inv_color
+    });
+  }
+};
+
+
+invCont.buildDeleteConfirmation = async function (req, res, next) {
+  const inv_id = req.params.invId;
+  try {
+    const itemData = await invModel.getInventoryById(inv_id);
+    if (!itemData) {
+      throw new Error('Vehicle not found');
+    }
+    const itemName = `${itemData.inv_make} ${itemData.inv_model}`;
+    const nav = await utilities.getNav();
+    res.render("inventory/delete-confirm", {
+      title: "Delete " + itemName,
+      nav,
+      inv_id: itemData.inv_id,
+      inv_make: itemData.inv_make,
+      inv_model: itemData.inv_model,
+      inv_year: itemData.inv_year,
+      inv_price: itemData.inv_price
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+invCont.deleteInventory = async function (req, res, next) {
+  const inv_id = parseInt(req.body.inv_id);
+  try {
+    const deleteResult = await invModel.deleteInventory(inv_id);
+    if (deleteResult.rowCount) {
+      req.flash("formSuccess", "Vehicle deleted successfully.");
+      return res.redirect("/inv");
+    } else {
+      req.flash("formError", "Failed to delete vehicle.");
+      return res.redirect(`/inv/delete/${inv_id}`);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
 
 module.exports = invCont

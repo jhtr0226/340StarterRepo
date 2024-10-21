@@ -1,9 +1,24 @@
 <header id="top-header">
-
     <span class="siteName">
         <a href="/" title="Return to home page">CSE Motors</a>
     </span>
-    <div>
-        <a title="Click to log in" href="/account/login">My account</a>
-    </div>
+
+    <% if (locals.loggedin) { %>
+        <div>
+            <!-- Welcome message, visible only to logged-in users, linking to the account page -->
+            <a href="/account/"><p>Welcome 
+                    <%= locals.accountData.account_firstname %>
+                !</p></a>
+
+            <!-- Show "Logout" link -->
+            <a href="/account/logout">Logout</a>
+
+        </div>
+
+        <% } else { %>
+            <!-- Show "My Account" link for non-logged-in users -->
+            <div>
+                <a href="/account/login" title="Click to log in">My Account</a>
+            </div>
+            <% } %>
 </header>

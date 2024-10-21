@@ -1,0 +1,35 @@
+<h1>
+    <%= title %>
+</h1>
+
+<p>You are logged in!</p>
+
+<h2>Welcome <%= locals.accountData.account_firstname %>
+        <%= locals.accountData.account_lastname %>
+</h2>
+
+
+<% if (message && message.length> 0) { %>
+    <div class="flash-message success">
+        <%= message %>
+    </div>
+    <% } %>
+
+        <% if (errors && errors.length> 0) { %>
+            <div class="flash-message error">
+                <% errors.forEach(error=> { %>
+                    <p>
+                        <%= error %>
+                    </p>
+                    <% }) %>
+            </div>
+            <% } %>
+
+<!-- Edit account information link -->
+<p><a href="/account/update">Update Account Information</a></p>
+
+<!-- Show link to Inventory Management for employees and admins -->
+<% if (locals.accountData.account_type==='Employee' || locals.accountData.account_type==='Admin' ) { %>
+    <h3>Inventory Management</h3>
+    <p><a href="/inv">Manage Inventory</a></p>
+    <% } %>

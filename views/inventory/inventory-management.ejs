@@ -1,12 +1,6 @@
 <h1>Inventory Management</h1>
 
-<% if (messages.formSuccess && messages.formSuccess.length> 0) { %>
-    <div class="alert alert-success">
-        <%= messages.formSuccess %>
-    </div>
-<% } %>
 
-<!-- Display error message -->
 <% if (messages.formError && messages.formError.length> 0) { %>
     <div class="alert alert-danger">
         <%= messages.formError %>
@@ -23,3 +17,16 @@
             <li><a href="/inv/add-classification">Add New Classification</a></li>
             <li><a href="/inv/add-car">Add New Vehicle</a></li>
         </ul>
+
+<h2>Manage Inventory</h2>
+<p>Select a classification from the list to 
+    see the items belonging to the classification</p>
+
+<%- classificationSelect %>
+
+
+<table id="inventoryDisplay"></table>
+<noscript>JavaScript must be enabled to use this page.</noscript>
+
+
+<script src="../../js/inventory.js"></script>

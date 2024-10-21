@@ -1,30 +1,17 @@
-const express = require("express")
-const router = new express.Router() 
-const invController = require("../controllers/invController")
-const utilities = require("../utilities")
+const express = require("express");
+const router = new express.Router();
+const invController = require("../controllers/invController");
+const utilities = require("../utilities");
+//const inValidate = require("../utilities/inventory-validation");
 
-router.get("/type/:classificationId", invController.buildByClassificationId);
-router.get("/detail/:invId", invController.buildByInventoryId)
+router.get("/type/:classificationId", utilities.handleErrors(invController.buildByClassificationId));
+router.get("/detail/:invId", utilities.handleErrors(invController.buildByInventoryId));
+
 router.get("/cause-error", (req, res, next) => {
   next(new Error("Intentional Server Error!"));
 });
 
-
-router.get("/", async (req, res) => {
-  try {
-    //console.log("Entering /inv route");
-    let nav = await utilities.getNav(); 
-
-    res.render("inventory/inventory-management", {
-      title: "Inventory Management",
-      nav,
-      messages: req.flash(),
-    });
-  } catch (error) {
-    res.status(500).send("Something went wrong: " + error.message);
-  }
-});
-
+router.get("/", utilities.checkAuthorization, utilities.handleErrors(invController.buildInventoryManagement));
 
 router.get("/add-classification", async (req, res) => {
   try {
@@ -40,7 +27,6 @@ router.get("/add-classification", async (req, res) => {
     res.status(500).send("Something went wrong: " + error.message);
   }
 });
-
 router.post("/add-classification", invController.addClassification);
 
 router.get("/add-car", async (req, res, next) => {
@@ -52,11 +38,22 @@ router.get("/add-car", async (req, res, next) => {
     next(error);
   }
 });
-
 router.post("/add-car", (req, res, next) => {
-  console.log("POST /add-car route hit"); // Log to confirm route is reached
+  //console.log("POST /add-car route hit");
   invController.addCar(req, res, next);
 });
+
+router.get("/getInventory/:classification_id", utilities.handleErrors(invController.getInventoryJSON));
+router.get("/edit/:invId", utilities.checkAuthorization, utilities.handleErrors(invController.buildEditInventory));
+
+router.post(
+  "/edit/:invId",
+  utilities.checkAuthorization, 
+  utilities.handleErrors(invController.updateInventory)
+);
+
+router.get("/delete/:invId", utilities.checkAuthorization, utilities.handleErrors(invController.buildDeleteConfirmation));
+router.post("/delete/:invId", utilities.checkAuthorization, utilities.handleErrors(invController.deleteInventory));
 
 module.exports = router;
 

@@ -18,6 +18,7 @@ const utilities = require("./utilities/")
 const account = require("./routes/accountRoute")
 const bodyParser = require("body-parser")
 const flash = require('connect-flash');
+const cookieParser = require("cookie-parser")
 
 app.use(session({
   store: new (require('connect-pg-simple')(session))({
@@ -41,8 +42,9 @@ app.use(function(req, res, next){
 })
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-
-
+app.use(cookieParser())
+app.use(utilities.checkJWTToken)
+app.use(express.urlencoded({ extended: true }));
 
 /* ***********************
  * View Engine and Templates

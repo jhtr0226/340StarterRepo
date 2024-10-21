@@ -15,22 +15,20 @@ router.post("/register", regValidate.registationRules(),
     utilities.handleErrors(accountController.registerAccount)
 )
 
-router.post(
-  "/login",
-  (req, res) => {
-    res.status(200).send('login process')
-  }
-)
-
 // Process login attempt
 router.post(
   "/login",
   regValidate.loginRules(),
-  (req, res) => {
-    res.status(200).send('login process');
-  }
+  utilities.handleErrors(accountController.accountLogin)
 );
 
+router.get("/", utilities.checkLogin, utilities.handleErrors(accountController.buildManagement))
 
+router.get("/logout", accountController.logoutAccount);
+
+router.get("/update", utilities.checkLogin, accountController.buildUpdateAccount);
+router.post("/update", utilities.checkLogin, utilities.handleErrors(accountController.updateAccountInfo));
+
+router.post("/change-password", utilities.checkLogin, utilities.handleErrors(accountController.changePassword));
 
 module.exports = router;
