@@ -142,10 +142,12 @@ const updateAccountInfo = async (req, res, next) => {
     const result = await accountModel.updateAccount(account_id, account_firstname, account_lastname, account_email);
 
     if (result) {
-      // Update the session data with the new account information
-      res.locals.accountData.account_firstname = account_firstname;
-      res.locals.accountData.account_lastname = account_lastname;
-      res.locals.accountData.account_email = account_email;
+      const updatedAccountData = await accountModel.getAccountById(account_id);
+      delete updatedAccountData.account_password;
+
+
+      const accessToken = jwt.sign(updatedAccountData, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3600 * 1000 });
+      res.cookie("jwt", accessToken, { httpOnly: true, maxAge: 3600 * 1000 });
 
       req.flash('success', 'Account information updated successfully.');
       return res.redirect('/account');
@@ -160,6 +162,7 @@ const updateAccountInfo = async (req, res, next) => {
   }
 };
 
+
 // Handle password change
 const changePassword = async (req, res, next) => {
   const { account_id, account_password } = req.body;
@@ -169,6 +172,12 @@ const changePassword = async (req, res, next) => {
     const result = await accountModel.changePassword(account_id, hashedPassword);
 
     if (result) {
+      const updatedAccountData = await accountModel.getAccountById(account_id);
+      delete updatedAccountData.account_password;
+
+      const accessToken = jwt.sign(updatedAccountData, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3600 * 1000 });
+      res.cookie("jwt", accessToken, { httpOnly: true, maxAge: 3600 * 1000 });
+
       req.flash('success', 'Password updated successfully.');
       return res.redirect('/account');
     } else {
@@ -176,7 +185,9 @@ const changePassword = async (req, res, next) => {
       return res.redirect('/account/change-password');
     }
   } catch (error) {
-    next(error);
+    console.error("Error changing password:", error);
+    req.flash('error', 'An error occurred while updating the password.');
+    return res.redirect('/account/change-password');
   }
 };
 

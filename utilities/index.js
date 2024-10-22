@@ -137,7 +137,7 @@ Util.checkAuthorization = (req, res, next) => {
       next();
     } else {
       req.flash("error", "Please log in with a valid administrator/employee account");
-      return res.redirect("/account/login"); // Block access and redirect to login if Client
+      return res.redirect("/account/login");
     }
   } else {
     req.flash("notice", "Please log in");
