@@ -9,6 +9,10 @@
             <a href="/account/"><p>Welcome 
                     <%= locals.accountData.account_firstname %>
                 !</p></a>
+     
+                <% if (locals.accountData.account_type==='Client' ) { %>
+                    <a href="/account/wishlist" title="View your wishlist">Wishlist</a>         
+                <% } %>
 
             <!-- Show "Logout" link -->
             <a href="/account/logout">Logout</a>

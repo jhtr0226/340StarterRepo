@@ -245,3 +245,8 @@ SET inv_image = REPLACE(inv_image, '/images/', '/images/vehicles/'),
     inv_thumbnail = REPLACE(inv_thumbnail, '/images/', '/images/vehicles/')
 WHERE inv_image LIKE '/images/%'
     OR inv_thumbnail LIKE '/images/%';
+CREATE TABLE wishlist (
+    user_id INT REFERENCES account(account_id) ON DELETE CASCADE,
+    item_id INT REFERENCES inventory(inv_id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, item_id)
+);

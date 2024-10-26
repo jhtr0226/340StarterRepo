@@ -193,10 +193,79 @@ const changePassword = async (req, res, next) => {
 
 
 
+// Add item to wishlist
+async function addItemToWishlist(req, res) {
+  try {
+    const account_id = req.session.user_id || (res.locals.accountData && res.locals.accountData.account_id);
+    const inv_id = req.body.inv_id; // Make sure this field is in the form
+
+    if (!account_id) {
+      req.flash('error', 'You must be logged in to add items to your wishlist.');
+      return res.redirect('/account/login');
+    }
+
+    const isAlreadyInWishlist = await accountModel.isInWishlist(account_id, inv_id);
+    if (isAlreadyInWishlist) {
+      req.flash('notice', 'This item is already in your wishlist.');
+      return res.redirect(`/inv/detail/${inv_id}`);
+    }
+
+    await accountModel.addToWishlist(account_id, inv_id);
+    req.flash('success', 'Item added to your wishlist!');
+    res.redirect('/account/wishlist');
+  } catch (error) {
+    console.error("Error adding item to wishlist:", error);
+    req.flash('error', 'Could not add item to wishlist.');
+    res.redirect('back');
+  }
+}
+
+// Remove item from wishlist
+async function removeItemFromWishlist(req, res) {
+  try {
+    const account_id = req.session.user_id || (res.locals.accountData && res.locals.accountData.account_id);
+    const inv_id = req.body.inv_id;
+
+    if (!account_id) {
+      req.flash('error', 'You must be logged in to manage your wishlist.');
+      return res.redirect('/account/login');
+    }
+
+    await accountModel.removeFromWishlist(account_id, inv_id);
+    req.flash('success', 'Item removed from wishlist.');
+    res.redirect('/account/wishlist');
+  } catch (error) {
+    console.error("Error removing item from wishlist:", error);
+    req.flash('error', 'Could not remove item from wishlist.');
+    res.redirect('/account/wishlist');
+  }
+}
+
+// accountController.js
+async function viewWishlist(req, res) {
+  try {
+    const account_id = req.session.user_id || (res.locals.accountData && res.locals.accountData.account_id);
+
+    if (!account_id) {
+      req.flash('error', 'You must be logged in to view your wishlist.');
+      return res.redirect('/account/login');
+    }
+
+    const wishlist = await accountModel.getWishlist(account_id);
+    let nav = await utilities.getNav();
+    res.render('account/wishlist', { title: 'Your Wishlist', nav, wishlist });
+  } catch (error) {
+    console.error("Error retrieving wishlist:", error);
+    req.flash('error', 'Could not retrieve wishlist.');
+    res.redirect('/');
+  }
+}
+
 
 
 module.exports = {
   buildLogin, buildRegister, registerAccount,
   accountLogin, buildManagement, logoutAccount, changePassword,
-  updateAccountInfo, buildUpdateAccount
+  updateAccountInfo, buildUpdateAccount, addItemToWishlist,
+  removeItemFromWishlist, viewWishlist
  }

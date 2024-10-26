@@ -59,9 +59,60 @@ async function getAccountById(account_id) {
 }
 
 
+async function addToWishlist(account_id, inv_id) {
+  try {
+    const query = 'INSERT INTO wishlist (user_id, item_id) VALUES ($1, $2)';
+    await pool.query(query, [account_id, inv_id]);
+  } catch (error) {
+    console.error("Error adding to wishlist:", error);
+    throw new Error('Unable to add item to wishlist');
+  }
+}
+
+async function removeFromWishlist(account_id, inv_id) {
+  try {
+    const query = 'DELETE FROM wishlist WHERE user_id = $1 AND item_id = $2';
+    await pool.query(query, [account_id, inv_id]);
+  } catch (error) {
+    console.error("Error removing from wishlist:", error);
+    throw new Error('Unable to remove item from wishlist');
+  }
+}
+
+
+async function isInWishlist(account_id, inv_id) {
+  try {
+    const query = 'SELECT * FROM wishlist WHERE user_id = $1 AND item_id = $2';
+    const result = await pool.query(query, [account_id, inv_id]);
+    return result.rowCount > 0;
+  } catch (error) {
+    console.error("Error checking wishlist:", error);
+    throw new Error('Unable to check wishlist');
+  }
+}
+
+async function getWishlist(account_id) {
+  try {
+    const query = `
+      SELECT inventory.* FROM inventory
+      JOIN wishlist ON inventory.inv_id = wishlist.item_id
+      WHERE wishlist.user_id = $1
+    `;
+    const result = await pool.query(query, [account_id]);
+    return result.rows;
+  } catch (error) {
+    console.error("Error retrieving wishlist:", error);
+    throw new Error('Unable to retrieve wishlist');
+  }
+}
+
+
+
+
 
 module.exports = {
   registerAccount, checkExistingEmail,
   getAccountByEmail, changePassword,
-  updateAccount, getAccountById
+  updateAccount, getAccountById, addToWishlist,
+  removeFromWishlist, isInWishlist, getWishlist
 }

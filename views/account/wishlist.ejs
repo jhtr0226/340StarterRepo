@@ -1,0 +1,24 @@
+<% if (wishlist.length> 0) { %>
+    <ul>
+        <% wishlist.forEach(item=> { %>
+            <li>
+                <a href="/inv/detail/<%= item.inv_id %>">
+                    <h2>
+                        <%= item.inv_make %>
+                            <%= item.inv_model %>
+                    </h2>
+                    <img src="<%= item.inv_image %>" alt="<%= item.inv_make %> <%= item.inv_model %>"
+                        style="width: 100px; height: auto;">
+                </a>
+                <p>Price: $<%= item.inv_price %>
+                </p>
+                <form action="/account/wishlist/remove" method="POST">
+                    <input type="hidden" name="inv_id" value="<%= item.inv_id %>">
+                    <button type="submit">Remove from Wishlist</button>
+                </form>
+            </li>
+            <% }) %>
+    </ul>
+    <% } else { %>
+        <p>Your wishlist is empty.</p>
+        <% } %>

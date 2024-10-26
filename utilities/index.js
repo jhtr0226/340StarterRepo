@@ -34,7 +34,7 @@ Util.buildClassificationGrid = async function (data) {
   return grid
 }
 
-Util.buildVehicleDetail = async function (vehicle) {
+Util.buildVehicleDetail = async function (vehicle, account_id = null, isInWishlist = false) {
   let detail = '<div class="vehicle-detail">';
   detail += `<div class="leftPart"><h1>${vehicle.inv_year}: ${vehicle.inv_make} ${vehicle.inv_model}</h1>`;
   detail += `<img src="${vehicle.inv_image}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model}"/></div>`;
@@ -43,6 +43,23 @@ Util.buildVehicleDetail = async function (vehicle) {
   detail += `<p>Description: ${vehicle.inv_description}</p>`;
   detail += `<p>Color: ${vehicle.inv_color}</p>`
   detail += `<p>Miles: ${new Intl.NumberFormat('en-US').format(vehicle.inv_miles)}</p></div>`;
+  
+  if (account_id) {
+    if (isInWishlist) {
+      // Remove from Wishlist button
+      detail += `<form action="/account/wishlist/remove" method="POST">
+                  <input type="hidden" name="inv_id" value="${vehicle.inv_id}" />
+                  <button type="submit">Remove from Wishlist</button>
+                 </form>`;
+    } else {
+      // Add to Wishlist button
+      detail += `<form action="/account/wishlist/add" method="POST">
+                  <input type="hidden" name="inv_id" value="${vehicle.inv_id}" />
+                  <button type="submit">Add to Wishlist</button>
+                 </form>`;
+    }
+  }
+  
   detail += '</div>';
   return detail;
   

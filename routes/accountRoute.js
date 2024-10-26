@@ -31,4 +31,10 @@ router.post("/update", utilities.checkLogin, utilities.handleErrors(accountContr
 
 router.post("/change-password", utilities.checkLogin, utilities.handleErrors(accountController.changePassword));
 
+router.get("/wishlist", utilities.checkLogin, utilities.handleErrors(accountController.viewWishlist));
+router.post("/wishlist/add", utilities.checkLogin, utilities.handleErrors(accountController.addItemToWishlist));
+router.post("/wishlist/remove", utilities.checkLogin, utilities.handleErrors(accountController.removeItemFromWishlist));
+
+
+
 module.exports = router;

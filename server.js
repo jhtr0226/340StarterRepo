@@ -61,6 +61,7 @@ app.use(flash());
 app.use(static)
 //Index route
 app.use("/inv", inventoryRoute)
+app.use("/account", account);
 app.get("/", utilities.handleErrors(baseController.buildHome))
 app.use((req, res, next) => {
   res.locals.flash = req.flash();

@@ -1,5 +1,6 @@
 const invModel = require("../models/inventory-model")
 const utilities = require("../utilities/")
+const accountModel = require("../models/account-model")
 
 const invCont = {}
 
@@ -32,25 +33,28 @@ invCont.buildByClassificationId = async function (req, res, next) {
 
 
 invCont.buildByInventoryId = async function (req, res, next) {
-  const inv_id = req.params.invId
+  const inv_id = req.params.invId;
   try {
-    const vehicleData = await invModel.getInventoryById(inv_id)
-    if (!vehicleData || vehicleData.length === 0) {
-      const error = new Error('Vehicle not found')
-      error.status = 404
-      throw error
+    const vehicleData = await invModel.getInventoryById(inv_id);
+    if (!vehicleData) {
+      throw new Error('Vehicle not found');
     }
-    const vehicleDetailHtml = await utilities.buildVehicleDetail(vehicleData)
-    const nav = await utilities.getNav()
+
+    const account_id = req.session.user_id || (res.locals.accountData && res.locals.accountData.account_id);
+    const isInWishlist = account_id ? await accountModel.isInWishlist(account_id, inv_id) : false;
+
+    const vehicleDetailHtml = await utilities.buildVehicleDetail(vehicleData, account_id, isInWishlist);
+    const nav = await utilities.getNav();
+
     res.render("inventory/detail", {
       title: `${vehicleData.inv_make} ${vehicleData.inv_model}`,
       nav,
       detail: vehicleDetailHtml,
-    })
+    });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 
 invCont.buildInventoryManagement = async function (req, res, next) {
